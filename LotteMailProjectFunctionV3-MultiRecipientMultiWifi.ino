@@ -1,4 +1,10 @@
+/* 
+Most of the code is from a example of the Esp_Mail_Client, which I did not wrote. Make sure you take this library and not the esp32 mail client, which is no longer updated.
+This is not perfect, this was a quick project and just a way to start a habbit in using github, so this is the first finished hobby project of hopefully many.
+If you find any mistakes, suggestions or better ways of using github; feel free to contact me.
 
+Good luck!
+*/
 
 #include <Arduino.h>
 #if defined(ESP32) || defined(ARDUINO_RASPBERRY_PI_PICO_W)
@@ -15,9 +21,6 @@
 
 #include <ESP_Mail_Client.h>
 
-//#define WIFI_SSID "AnimalWelfareSolutions"
-//#define WIFI_PASSWORD "AWSGuest"
-
 //define wifi
 struct WiFiCredentials {
   const char* ssid;
@@ -26,9 +29,9 @@ struct WiFiCredentials {
 
 // List of WiFi credentials
 WiFiCredentials wifiNetworks[] = {
-  {"Proximus-Home-4958", "wpe7smnnbpx9h"},
-  {"AnimalWelfareSolutions", "AWSGuest"},
-};
+  {"ssid1", "Pass1"},
+  {"ssid2", "Pass2"},
+}; //update for your own wifi credentials
 
 const int wifiCount = sizeof(wifiNetworks) / sizeof(WiFiCredentials);
 
@@ -41,20 +44,20 @@ const int wifiCount = sizeof(wifiNetworks) / sizeof(WiFiCredentials);
  * 465 or esp_mail_smtp_port_465
  * 587 or esp_mail_smtp_port_587
  */
-#define SMTP_PORT esp_mail_smtp_port_587
+#define SMTP_PORT esp_mail_smtp_port_587 
 
-/* The log in credentials */
-#define AUTHOR_EMAIL "tasper.automation@gmail.com"
-#define AUTHOR_PASSWORD "memk kvvh htzt ecla"
+/* The log in credentials, check guide to get a application password for your gmail, only possible if you have 2 factor authentication enabled */
+#define AUTHOR_EMAIL "Sender@gmail.com"
+#define AUTHOR_PASSWORD "SenderPassword"
 
 /* Recipient email address */
 //#define Recipient "test"
-#define Ontvanger "Hilde.Luppens@gmail.com"
-#define Ontvanger2 "Stephan.Tavernier@gmail.com"
-#define Ontvanger3 "jasper.Tavernier@gmail.com"
+#define Ontvanger "Recipient1@gmail.com"
+#define Ontvanger2 "Recipient2@gmail.com"
+#define Ontvanger3 "Recipient3@gmail.com"
 
-//#define Inhoud "test"
-#define Boodschap "Dag Moeke,\r\n\r\n Lotte heeft jouw nodig, bel je haar eens op? \r\n\r\n Groetjes van de ICE-knop van Lotte."
+//message of the email:
+#define Boodschap "Dag Moeke,\r\n\r\n Lotte heeft jouw nodig, bel je haar eens op? \r\n\r\n Groetjes van de ICE-knop van Lotte." //\r\n\r\n = new line start after this.
 #define Boodschap2 "Dag Papa,\r\n\r\n Lotte heeft jouw nodig, bel je haar eens op? \r\n\r\n Groetjes van de ICE-knop van Lotte."
 #define Boodschap3 "Dag Broerje,\r\n\r\n Lotte heeft jouw nodig, bel je haar eens op? \r\n\r\n Groetjes van de ICE-knop van Lotte."
 
@@ -100,17 +103,6 @@ void setup()
 
   connectToWiFi();
 
-  //WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  //Serial.print("Connecting to Wi-Fi");
-  //while (WiFi.status() != WL_CONNECTED)
-  //{
-  //   Serial.print(".");
-  //    LoadingLed();
-      //delay(300);//delay in led function
-
-  //}
-
-
   /*  Set the network reconnection option */
   MailClient.networkReconnect(true);
 
@@ -125,8 +117,6 @@ void setup()
 
   /* Set the callback function to get the sending results */
   smtp.callback(smtpCallback);
-
-
 
   /* Set the session config */
   config.server.host_name = SMTP_HOST;
@@ -143,6 +133,7 @@ void setup()
     * Assign any text to this option may cause the connection rejection.
     */
   config.login.user_domain = F("127.0.0.1");
+  
   /*
   Set the NTP config time
   For times east of the Prime Meridian use 0-12
@@ -340,7 +331,7 @@ void flashLED(int ledPinx) {
   delay(500);
 }
 
-void SetupLED() {
+void SetupLED() { //just a slightly more appealing visual, very poorly coded ;)
   for (int i = 0; i < 3; i++) {
     digitalWrite(ledPin, HIGH);
     digitalWrite(ledPin2, HIGH);
@@ -361,7 +352,7 @@ void SetupLED() {
   //delay(500);
 }
 
-void LoadingLed() {
+void LoadingLed() { // nice visual effect while waiting for wifi, again just poorly coded but it works and I was ready on time (like 30 minutes before having to leave to the party...
   digitalWrite(ledPin, HIGH);
   delay(200);
   digitalWrite(ledPin, LOW);  
@@ -374,7 +365,7 @@ void LoadingLed() {
   delay(100); 
 }
 
-void connectToWiFi() {
+void connectToWiFi() { //Connecting to multiple wifi's so I could show it with my hotspot on my phone and a powerbank, but also already registered the wifi of the house it was going to end up in.
   bool connected = false;
   for (int i = 0; i < wifiCount; i++) {
     WiFi.begin(wifiNetworks[i].ssid, wifiNetworks[i].password);
