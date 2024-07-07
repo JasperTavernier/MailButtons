@@ -1,0 +1,4 @@
+Hardware:
+1x Arduino nano esp32 (arduino enviroment with wifi capabilities)
+3x Momentary switch with LED, +&- exits for LED and 2 exits to connect the switch)
+Everything else was a design chose, so not necessary. The files however include does design choses.
